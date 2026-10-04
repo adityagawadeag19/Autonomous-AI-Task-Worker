@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>Relay — AI task worker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Relay home"><span class="brand-mark"><i></i><i></i><i></i></span><span>relay<span class="brand-dot">.</span></span></a>
+      <div class="workspace-label">WORKSPACE</div>
+      <button class="workspace-switch"><span class="workspace-icon">N</span><span class="workspace-name">Northstar Studio<small>Sandbox workspace</small></span><span class="chevron">⌄</span></button>
+      <div class="nav-label">WORKSPACE</div>
+      <nav>
+        <button class="nav-item active"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav-item" id="navRuns"><span class="nav-icon">◷</span>Task history<span class="nav-count" id="runCount">0</span></button>
+      </nav>
+      <div class="nav-label tools-label">CONNECTED TOOLS</div>
+      <div class="tool-link"><span class="tool-logo inbox-logo">↙</span><span>Invoice inbox</span><span class="connected-dot"></span></div>
+      <div class="tool-link"><span class="tool-logo ledger-logo">▦</span><span>Company ledger</span><span class="connected-dot"></span></div>
+      <div class="sidebar-bottom"><div class="safe-card"><div class="safe-head"><span class="safe-check">✓</span>Sandbox mode</div><p>Actions run on sample data. No real accounts connected.</p></div><div class="profile"><div class="avatar">G</div><div>Guest user<small>Local session</small></div><span class="profile-dots">···</span></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="crumb">Workspace <span>/</span> Overview</div><div class="top-actions"><span class="environment-pill"><b></b> Demo environment</span><button class="help-button" aria-label="About this demo">?</button></div></header>
+      <div class="page-wrap">
+        <section class="welcome"><div><div class="eyebrow"><span class="spark">✳</span> YOUR AI WORKER</div><h1>Good morning, guest</h1><p>Give Relay an outcome. It will figure out the steps.</p></div><div class="date-chip"><span>◷</span> Your personal workspace</div></section>
+        <section class="composer-card">
+          <div class="composer-top"><div class="composer-label"><span class="prompt-icon">✳</span><div><strong>What would you like Relay to do?</strong><small>Describe the outcome. Relay will plan and execute the work.</small></div></div><span class="private-label">⌑ &nbsp;Private to you</span></div>
+          <textarea id="taskInput" rows="2" placeholder="e.g. Find the latest invoice from Acme, add it to the ledger, and let me know when it's done."></textarea>
+          <div class="composer-bottom"><div class="suggestions"><span>TRY</span><button class="suggestion" data-task="Find the latest invoice from Acme, record it in the ledger, and tell me when it's done.">Process an invoice <span>↗</span></button><button class="suggestion" data-task="Find the latest invoice from Northstar, record it in the ledger, and tell me when it's done.">Try another company <span>↗</span></button></div><button id="runButton" class="run-button"><span>Run task</span><span class="run-arrow">↑</span></button></div>
+          <div class="composer-foot"><span>↳ &nbsp;Relay asks for clarification before acting on an ambiguous request.</span><span class="shortcut">⌘ ↵</span></div>
+          <label class="failure-toggle"><input id="simulateFailure" type="checkbox"><span class="toggle-box">✓</span><span>Demo: simulate one temporary inbox error <small>to see Relay retry</small></span><span class="toggle-badge">OPTIONAL</span></label>
+        </section>
+        <div class="section-heading"><div><h2 id="activityTitle">Your workspace</h2><p id="activitySubtitle">A live view of the tools Relay can use.</p></div><button class="text-button" id="resetButton">Reset demo data <span>↺</span></button></div>
+        <section class="dashboard-grid">
+          <div class="panel tools-panel"><div class="panel-heading"><div><h3>Connected tools</h3><p>Available to Relay in this workspace</p></div><span class="live-tag"><b></b> 2 active</span></div>
+            <div class="connection-row"><div class="connection-icon inbox-logo">↙</div><div class="connection-info"><strong>Invoice inbox</strong><small>Find and read incoming invoices</small></div><span class="enabled-tag">Enabled</span></div>
+            <div class="connection-row"><div class="connection-icon ledger-logo">▦</div><div class="connection-info"><strong>Company ledger</strong><small>Create and verify invoice records</small></div><span class="enabled-tag">Enabled</span></div>
+            <div class="data-note"><span>ⓘ</span><span>These tools use local sample data. Nothing is sent to a real company system.</span></div>
+          </div>
+          <div class="panel ledger-panel"><div class="panel-heading"><div><h3>Recent ledger entries</h3><p id="ledgerSubtitle">Verified records in this demo</p></div><span class="entry-count" id="entryCount">0 records</span></div><div class="ledger-table-wrap"><table><thead><tr><th>VENDOR</th><th>AMOUNT</th><th>DUE DATE</th><th>STATUS</th></tr></thead><tbody id="ledgerRows"></tbody></table><div class="empty-ledger" id="emptyLedger"><span class="empty-icon">▤</span><strong>No entries yet</strong><p>Completed invoice tasks will appear here.</p></div></div></div>
+        </section>
+        <section class="run-panel panel" id="runPanel" hidden><div class="run-panel-head"><div><div class="panel-heading"><div><h3 id="runHeading">Task run</h3><p id="runSubheading">Execution details</p></div><span class="run-status" id="runStatus"></span></div></div><div class="run-content"><div class="timeline" id="timeline"></div><aside class="evidence-card" id="evidenceCard"><div class="evidence-icon">✓</div><h4>Completion evidence</h4><p id="evidenceText">Relay will show what it verified here.</p><div id="evidenceDetails"></div><div class="approval-box" id="approvalBox" hidden><strong>Approve ledger write?</strong><p id="approvalSummary"></p><div class="approval-actions"><button id="rejectWrite" class="approval-reject">Decline</button><button id="approveWrite" class="approval-approve">Approve write</button></div></div></aside></div></section>
+        <footer class="footer"><span>Relay prototype <i>·</i> Built for the Autonomous AI Task Worker challenge</span><span><span class="footer-dot"></span> All systems operational</span></footer>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="aboutDialog"><button class="dialog-close" aria-label="Close">×</button><span class="dialog-spark">✳</span><h2>A small, honest AI worker</h2><p>This prototype completes one bounded workflow: find a vendor's latest invoice, extract its fields, add it to a local ledger, and verify the saved record.</p><p>Its planner uses explicit rules and sample tools; it does not call an LLM or access external accounts. The run timeline shows every tool observation and retry.</p><button class="dialog-ok">Got it</button></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
